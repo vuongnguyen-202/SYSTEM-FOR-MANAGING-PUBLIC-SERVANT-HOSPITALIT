@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+<head>
+  <meta charset="UTF-8">
+  <title>Implementation Report</title>
+</head>
+<body>
+<h1>Report Form</h1>
+
+<h2>Report Field 1</h2>
+<form>
+  <label for="application-number">Application Number:</label>
+  <input type="text" id="application-number"><br>
+  <label for="report-number">Report Number:</label>
+  <input type="text" id="report-number"><br>
+
+  <label for="report-date">Report Date:</label>
+  <input type="date" id="report-date"><br>
+
+  <label for="approval-date">Approval Date:</label>
+  <input type="date" id="approval-date"><br>
+
+  <label for="business-headquarters">Business Headquarters:</label>
+  <select id="business-headquarters">
+    <option value="a">A</option>
+    <option value="b">B</option>
+  </select><br>
+
+  <label for="business-headquarters-code">Business Headquarters Code:</label>
+  <select id="business-headquarters-code">
+    <option value="a">A</option>
+    <option value="b">B</option>
+  </select><br>
+
+  <label for="application-department">Application/Supervising Department:</label>
+  <input type="text" id="application-department"><br>
+
+  <label for="application-room-address-code">Application Room Address Code:</label>
+  <input type="text" id="application-room-address-code"><br>
+
+  <label for="affiliated-company-code">Affiliated Company Code:</label>
+  <input type="text" id="affiliated-company-code"><br>
+
+  <label for="main-office">Main Office (Group Address):</label>
+  <input type="text" id="main-office"><br>
+
+  <label for="attachment-description">Attachment (addition) description:</label>
+  <input type="text" id="attachment-description"><br>
+
+  <label for="attachments">Attachments (additional):</label>
+  <input type="file" id="attachments" multiple><br>
+
+  <h3>Attachment (saved)</h3>
+  <table>
+    <thead>
+    <tr>
+      <th>File Name</th>
+      <th>Action</th>
+    </tr>
+    </thead>
+    <tbody id="attachment-list">
+    <!-- Attachments will be dynamically added here -->
+    </tbody>
+  </table>
+</form>
+
+<script>
+    // Function to display the selected files in the "Attachment (saved)" section
+    function displayAttachments() {
+      var fileList = document.querySelector('input[type=file]').files;
+      var attachmentList = document.getElementById('attachment-list');
+
+      attachmentList.innerHTML = '';
+
+      for (var i = 0; i < fileList.length; i++) {
+        var fileName = fileList[i].name;
+        var listItem = document.createElement('tr');
+
+        var nameCell = document.createElement('td');
+        nameCell.textContent = fileName;
+        listItem.appendChild(nameCell);
+
+        var actionCell = document.createElement('td');
+        var downloadLink = document.createElement('a');
+        downloadLink.href = URL.createObjectURL(fileList[i]);
+        downloadLink.download = fileName;
+        downloadLink.textContent = 'Download';
+        actionCell.appendChild(downloadLink);
+        actionCell.appendChild(document.createTextNode(' | '));
+        var deleteLink = document.createElement('a');
+        deleteLink.href = '#';
+        deleteLink.textContent = 'Delete';
+        deleteLink.addEventListener('click', deleteAttachment);
+        actionCell.appendChild(deleteLink);
+
+        listItem.appendChild(actionCell);
+
+        attachmentList.appendChild(listItem);
+      }
+    }
+
+    // Function to delete an attachment
+    function deleteAttachment(event) {
+      event.preventDefault();
+      var listItem = event.target.parentNode.parentNode;
+      listItem.parentNode.removeChild(listItem);
+    }
+
+    // Add an event listener to the file input
+    document.querySelector('input[type=file]').addEventListener('change', displayAttachments);
+  </script>
+  <h2>Verification preset setting</h2>
+  <label for="verification-preset">Verification Preset:</label>
+  <select id="verification-preset">
+    <option value="a">A</option>
+    <option value="b">B</option>
+  </select><br>
+
+  <label for="manager">Manager</label>
+  <input type="text" id="manager"><br>
+
+  <label for="affiliated-company-name">Affiliated Company Name:</label>
+  <input type="text" id="affiliated-company-name"><br>
+
+  <table>
+    <thead>
+    <tr>
+      <th>Authorized reviewer</th>
+      <th>Proxy reviewer</th>
+      <th>Job system</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td><input type="text" name="authorized-reviewer[]" /></td>
+      <td><input type="text" name="proxy-reviewer[]" /></td>
+      <td><input type="text" name="job-system[]" /></td>
+    </tr>
+    <tr>
+      <td><input type="text" name="authorized-reviewer[]" /></td>
+      <td><input type="text" name="proxy-reviewer[]" /></td>
+      <td><input type="text" name="job-system[]" /></td>
+    </tr>
+    <tr>
+      <td><input type="text" name="authorized-reviewer[]" /></td>
+      <td><input type="text" name="proxy-reviewer[]" /></td>
+      <td><input type="text" name="job-system[]" /></td>
+    </tr>
+    <tr>
+      <td><input type="text" name="authorized-reviewer[]" /></td>
+      <td><input type="text" name="proxy-reviewer[]" /></td>
+      <td><input type="text" name="job-system[]" /></td>
+    </tr>
+    <tr>
+      <td><input type="text" name="authorized-reviewer[]" /></td>
+      <td><input type="text" name="proxy-reviewer[]" /></td>
+      <td><input type="text" name="job-system[]" /></td>
+    </tr>
+    <tr>
+      <td><input type="text" name="authorized-reviewer[]" /></td>
+      <td><input type="text" name="proxy-reviewer[]" /></td>
+      <td><input type="text" name="job-system[]" /></td>
+    </tr>
+    </tbody>
+  </table>
+  <h2>Application Field 2</h2>
+  <label for="copy-existing">Copy of existing application form:</label>
+  <textarea id="copy-existing"></textarea><br>
+
+  <button id="copy-button">Copy</button><br>
+
+  <label for="scheduled-date-from">Scheduled implementation date From:</label>
+  <input type="date" id="scheduled-date-from"><br>
+
+  <label for="scheduled-date-to">Scheduled implementation date To:</label>
+  <input type="date" id="scheduled-date-to"><br>
+
+  <label for="inclusive-frequency">If inclusive, frequency:</label>
+  <input type="text" id="inclusive-frequency"><br>
+
+  <label for="project-country">Project country:</label>
+  <input type="text" id="project-country"><br>
+
+  <label for="project-title">Project Title:</label>
+  <input type="text" id="project-title"><br>
+
+  <label for="oda-project">It is an ODA project:</label>
+  <input type="checkbox" id="oda-project"><br>
+
+  <label for="country-name">Country name:</label>
+  <input type="text" id="country-name"><br>
+
+  <label for="city-name">Name of a city:</label>
+  <input type="text" id="city-name"><br>
+
+<h2>Participant( Civil side)</h2>
+<label for="number-of-peoples">Number of people:</label>
+<input type="text" id="number-of-peoples"><br>
+<table>
+  <thead>
+  <tr>
+    <th>Investor </th>
+    <th>Investment ratio</th>
+    <th>Government Office</th>
+    <th>Department</th>
+    <th>Board Member</th>
+    <th>full name</th>
+    <th>attribute</th>
+    <th>participating entertainment</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td><input type="text" name="Investor[]"/></td>
+    <td><input type="text" name="Government investment ratio[]"/></td>
+    <td><input type="text" name="Government Offices []"/>
+      <button type="button" id="deleteIcon" onclick="clearGovernmentOffice()">Delete</button>
+      <button><a href="/peoplecharge/search">Search</a></button>
+      <script>
+                      function clearGovernmentOffice() {
+                      document.getElementById("governmentOffice").value = "";
+                      }
+                       </script>
+    </td>
+    <td><input type="text" name="Department[]"/></td>
+    <td><input type="text" name="BoardName[]"/></td>
+    <td><input type="text" name="fullName[]"/></td>
+    <td><select name="attribute[]">
+      <option value="1">bureaucrats/official</option>
+      <option value="2">politicians</option>
+      <option value="3">national companies</option>
+      <option value="4">others</option>
+      <option value="5">public officials</option>
+      <option value="6">politician</option>
+      <option value="7">national company</option>
+    </select></td>
+    <td><input type="text" name="entertainment[]"></td>
+  </tr>
+  <tr>
+    <td><input type="text" name="Investor[]"/></td>
+    <td><input type="text" name="Government investment ratio[]"/></td>
+    <td><input type="text" name="Government Offices []"/>
+      <button type="button" name="deleteIcon" onclick="clearGovernmentOffice()">Delete</button>
+      <button><a href="/peoplecharge/search">Search</a></button>
+      <script>
+                      function clearGovernmentOffice() {
+                      document.getElementById("governmentOffice").value = "";
+                      }
+                       </script>
+    </td>
+    <td><input type="text" name="Department[]"/></td>
+    <td><input type="text" name="BoardName[]"/></td>
+    <td><input type="text" name="fullName[]"/></td>
+    <td><select name="attribute[]">
+      <option value="1">bureaucrats/official</option>
+      <option value="2">politicians</option>
+      <option value="3">national companies</option>
+      <option value="4">others</option>
+      <option value="5">public officials</option>
+      <option value="6">politician</option>
+      <option value="7">national company</option>
+    </select></td>
+    <td><input type="text" name="entertainment[]"></td>
+  </tr>
+  <tr>
+    <td><input type="text" name="Investor[]"/></td>
+    <td><input type="text" name="Government investment ratio[]"/></td>
+    <td><input type="text" name="Government Offices []"/>
+      <button type="button" name="deleteIcon" onclick="clearGovernmentOffice()">Delete</button>
+      <button><a href="/peoplecharge/search">Search</a></button>
+      <script>
+                      function clearGovernmentOffice() {
+                      document.getElementById("governmentOffice").value = "";
+                      }
+                       </script>
+    </td>
+    <td><input type="text" name="Department[]"/></td>
+    <td><input type="text" name="BoardName[]"/></td>
+    <td><input type="text" name="fullName[]"/></td>
+    <td><select name="attribute[]">
+      <option value="1">bureaucrats/official</option>
+      <option value="2">politicians</option>
+      <option value="3">national companies</option>
+      <option value="4">others</option>
+      <option value="5">public officials</option>
+      <option value="6">politician</option>
+      <option value="7">national company</option>
+    </select></td>
+    <td><input type="text" name="entertainment[]"></td>
+  </tr>
+  <tr>
+    <td><input type="text" name="Investor[]"/></td>
+    <td><input type="text" name="Government investment ratio[]"/></td>
+    <td><input type="text" name="Government Offices []"/>
+      <button type="button" name="deleteIcon" onclick="clearGovernmentOffice()">Delete</button>
+      <button><a href="/peoplecharge/search">Search</a></button>
+      <script>
+                      function clearGovernmentOffice() {
+                      document.getElementById("governmentOffice").value = "";
+                      }
+                       </script>
+    </td>
+    <td><input type="text" name="Department[]"/></td>
+    <td><input type="text" name="BoardName[]"/></td>
+    <td><input type="text" name="fullName[]"/></td>
+    <td><select name="attribute[]">
+      <option value="1">bureaucrats/official</option>
+      <option value="2">politicians</option>
+      <option value="3">national companies</option>
+      <option value="4">others</option>
+      <option value="5">public officials</option>
+      <option value="6">politician</option>
+      <option value="7">national company</option>
+    </select></td>
+    <td><input type="text" name="entertainment[]"></td>
+  </tr>
+  <tr>
+    <td><input type="text" name="Investor[]"/></td>
+    <td><input type="text" name="Government investment ratio[]"/></td>
+    <td><input type="text" name="Government Offices []"/>
+      <button type="button" name="deleteIcon" onclick="clearGovernmentOffice()">Delete</button>
+      <button><a href="/peoplecharge/search">Search</a></button>
+      <script>
+                      function clearGovernmentOffice() {
+                      document.getElementById("governmentOffice").value = "";
+                      }
+                       </script>
+    </td>
+    <td><input type="text" name="Department[]"/></td>
+    <td><input type="text" name="BoardName[]"/></td>
+    <td><input type="text" name="fullName[]"/></td>
+    <td><select name="attribute[]">
+      <option value="1">bureaucrats/official</option>
+      <option value="2">politicians</option>
+      <option value="3">national companies</option>
+      <option value="4">others</option>
+      <option value="5">public officials</option>
+      <option value="6">politician</option>
+      <option value="7">national company</option>
+    </select></td>
+    <td><input type="text" name="entertainment[]"></td>
+  </tr>
+  <tr>
+    <td><input type="text" name="Investor[]"/></td>
+    <td><input type="text" name="Government investment ratio[]"/></td>
+    <td><input type="text" name="Government Offices []"/>
+      <button type="button" name="deleteIcon" onclick="clearGovernmentOffice()">Delete</button>
+      <button><a href="/peoplecharge/search">Search</a></button>
+      <script>
+                      function clearGovernmentOffice() {
+                      document.getElementById("governmentOffice").value = "";
+                      }
+                       </script>
+    </td>
+    <td><input type="text" name="Department[]"/></td>
+    <td><input type="text" name="BoardName[]"/></td>
+    <td><input type="text" name="fullName[]"/></td>
+    <td><select name="attribute[]">
+      <option value="1">bureaucrats/official</option>
+      <option value="2">politicians</option>
+      <option value="3">national companies</option>
+      <option value="4">others</option>
+      <option value="5">public officials</option>
+      <option value="6">politician</option>
+      <option value="7">national company</option>
+    </select></td>
+    <td><input type="text" name="entertainment[]"></td>
+  </tr>
+  </tbody>
+</table>
+  <h2>Participant( Our Company)</h2>
+  <label for="number-of-people">Number of people:</label>
+  <input type="text" id="number-of-people"><br>
+  <table>
+    <thead>
+    <tr>
+      <th>Our Department Name</th>
+      <th>Our Office Name</th>
+      <th>post</th>
+      <th>full name</th>
+      <th>attribute</th>
+      <th>participating entertainment</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td><input type="text" name="departmentName[]"/></td>
+      <td><input type="text" name="officeName[]"/></td>
+      <td><input type="text" name="post[]"/></td>
+      <td><input type="text" name="fullName[]"/></td>
+      <td><select name="attribute[]">
+        <option value="1">In-house</option>
+        <option value="2">Affiliated company</option>
+        <option value="3">External</option>
+        <option value="4">MBK</option>
+        <option value="5">subsidiary</option>
+        <option value="6">secondment</option>
+      </select></td>
+      <td><input type="text" name="entertainment[]"></td>
+    </tr>
+    <tr>
+      <td><input type="text" name="departmentName[]"/></td>
+      <td><input type="text" name="officeName[]"/></td>
+      <td><input type="text" name="post[]"/></td>
+      <td><input type="text" name="fullName[]"/></td>
+      <td><select name="attribute[]">
+        <option value="1">In-house</option>
+        <option value="2">Affiliated company</option>
+        <option value="3">External</option>
+        <option value="4">MBK</option>
+        <option value="5">subsidiary</option>
+        <option value="6">secondment</option>
+      </select></td>
+      <td><input type="text" name="entertainment[]"></td>
+    </tr>
+    <tr>
+      <td><input type="text" name="departmentName[]"/></td>
+      <td><input type="text" name="officeName[]"/></td>
+      <td><input type="text" name="post[]"/></td>
+      <td><input type="text" name="fullName[]"/></td>
+      <td><select name="attribute[]">
+        <option value="1">In-house</option>
+        <option value="2">Affiliated company</option>
+        <option value="3">External</option>
+        <option value="4">MBK</option>
+        <option value="5">subsidiary</option>
+        <option value="6">secondment</option>
+      </select></td>
+      <td><input type="text" name="entertainment[]"></td>
+    </tr>
+    <tr>
+      <td><input type="text" name="departmentName[]"/></td>
+      <td><input type="text" name="officeName[]"/></td>
+      <td><input type="text" name="post[]"/></td>
+      <td><input type="text" name="fullName[]"/></td>
+      <td><select name="attribute[]">
+        <option value="1">In-house</option>
+        <option value="2">Affiliated company</option>
+        <option value="3">External</option>
+        <option value="4">MBK</option>
+        <option value="5">subsidiary</option>
+        <option value="6">secondment</option>
+      </select></td>
+      <td><input type="text" name="entertainment[]"></td>
+    </tr>
+    <tr>
+      <td><input type="text" name="departmentName[]"/></td>
+      <td><input type="text" name="officeName[]"/></td>
+      <td><input type="text" name="post[]"/></td>
+      <td><input type="text" name="fullName[]"/></td>
+      <td><select name="attribute[]">
+        <option value="1">In-house</option>
+        <option value="2">Affiliated company</option>
+        <option value="3">External</option>
+        <option value="4">MBK</option>
+        <option value="5">subsidiary</option>
+        <option value="6">secondment</option>
+      </select></td>
+      <td><input type="text" name="entertainment[]"></td>
+    </tr>
+    <tr>
+      <td><input type="text" name="departmentName[]"/></td>
+      <td><input type="text" name="officeName[]"/></td>
+      <td><input type="text" name="post[]"/></td>
+      <td><input type="text" name="fullName[]"/></td>
+      <td><select name="attribute[]">
+        <option value="1">In-house</option>
+        <option value="2">Affiliated company</option>
+        <option value="3">External</option>
+        <option value="4">MBK</option>
+        <option value="5">subsidiary</option>
+        <option value="6">secondment</option>
+      </select></td>
+      <td><input type="text" name="entertainment[]"></td>
+    </tr>
+    </tbody>
+  </table>
+  <h2>Participant(other)</h2>
+  <label for="number-of-people">Number of people:</label>
+  <input type="text" name="number-of-people"><br>
+  <table>
+    <thead>
+    <tr>
+      <th>Our Department Name</th>
+      <th>Our Office Name</th>
+      <th>post</th>
+      <th>full name</th>
+      <th>attribute</th>
+      <th>participating entertainment</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td><input type="text" name="departmentName[]"/></td>
+      <td><input type="text" name="officeName[]"/></td>
+      <td><input type="text" name="post[]"/></td>
+      <td><input type="text" name="fullName[]"/></td>
+      <td><select name="attribute[]">
+        <option value="1">In-house</option>
+        <option value="2">Affiliated company</option>
+        <option value="3">External</option>
+        <option value="4">MBK</option>
+        <option value="5">subsidiary</option>
+        <option value="6">secondment</option>
+      </select></td>
+      <td><input type="text" name="entertainment[]"></td>
+    </tr>
+    <tr>
+      <td><input type="text" name="departmentName[]"/></td>
+      <td><input type="text" name="officeName[]"/></td>
+      <td><input type="text" name="post[]"/></td>
+      <td><input type="text" name="fullName[]"/></td>
+      <td><select name="attribute[]">
+        <option value="1">In-house</option>
+        <option value="2">Affiliated company</option>
+        <option value="3">External</option>
+        <option value="4">MBK</option>
+        <option value="5">subsidiary</option>
+        <option value="6">secondment</option>
+      </select></td>
+      <td><input type="text" name="entertainment[]"></td>
+    </tr>
+    <tr>
+      <td><input type="text" name="departmentName[]"/></td>
+      <td><input type="text" name="officeName[]"/></td>
+      <td><input type="text" name="post[]"/></td>
+      <td><input type="text" name="fullName[]"/></td>
+      <td><select name="attribute[]">
+        <option value="1">In-house</option>
+        <option value="2">Affiliated company</option>
+        <option value="3">External</option>
+        <option value="4">MBK</option>
+        <option value="5">subsidiary</option>
+        <option value="6">secondment</option>
+      </select></td>
+      <td><input type="text" name="entertainment[]"></td>
+    </tr>
+    <tr>
+      <td><input type="text" name="departmentName[]"/></td>
+      <td><input type="text" name="officeName[]"/></td>
+      <td><input type="text" name="post[]"/></td>
+      <td><input type="text" name="fullName[]"/></td>
+      <td><select name="attribute[]">
+        <option value="1">In-house</option>
+        <option value="2">Affiliated company</option>
+        <option value="3">External</option>
+        <option value="4">MBK</option>
+        <option value="5">subsidiary</option>
+        <option value="6">secondment</option>
+      </select></td>
+      <td><input type="text" name="entertainment[]"></td>
+    </tr>
+    <tr>
+      <td><input type="text" name="departmentName[]"/></td>
+      <td><input type="text" name="officeName[]"/></td>
+      <td><input type="text" name="post[]"/></td>
+      <td><input type="text" name="fullName[]"/></td>
+      <td><select name="attribute[]">
+        <option value="1">In-house</option>
+        <option value="2">Affiliated company</option>
+        <option value="3">External</option>
+        <option value="4">MBK</option>
+        <option value="5">subsidiary</option>
+        <option value="6">secondment</option>
+      </select></td>
+      <td><input type="text" name="entertainment[]"></td>
+    </tr>
+    <tr>
+      <td><input type="text" name="departmentName[]"/></td>
+      <td><input type="text" name="officeName[]"/></td>
+      <td><input type="text" name="post[]"/></td>
+      <td><input type="text" name="fullName[]"/></td>
+      <td><select name="attribute[]">
+        <option value="1">In-house</option>
+        <option value="2">Affiliated company</option>
+        <option value="3">External</option>
+        <option value="4">MBK</option>
+        <option value="5">subsidiary</option>
+        <option value="6">secondment</option>
+      </select></td>
+      <td><input type="text" name="entertainment[]"></td>
+    </tr>
+    </tbody>
+  </table>
+  <h2>Meeting places</h2>
+  <label for="CountryName">Country Name</label>
+  <input type="text" id="CountryName"><br>
+  <label for="NameCity">Name Of City</label>
+  <input type="text" id="NameCity"><br>
+
+  <table>
+    <thead>
+    <tr>
+      <th>Contents of hospitality</th>
+      <th>Implement date</th>
+      <th>Unit price(yen)</th>
+      <th>Currency</th>
+      <th>Unit price(foreign currency</th>
+      <th>rate</th>
+      <th>Remarks</th>
+      <th>Number of people/quantity</th>
+      <th>Total amount(yen)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td><select name="Content_history[]">
+        <option value="1">Breakfast</option>
+        <option value="2">Lunch</option>
+        <option value="3">Dinner</option>
+        <option value="4">Gift(food)</option>
+        <option value="5">Gift(Artwork)</option>
+        <option value="6">Gift(other)</option>
+        <option value="7">Golf</option>
+        <option value="8">Sightseeing</option>
+        <option value="9">other</option>
+      </select></td>
+      <td><input type="date" name="ImplementationDate[]"/></td>
+      <td><input type="text" name="UnitPrice[]"/></td>
+      <td><input type="text" name="currency[]"/></td>
+      <td><input type="text" name="unitPrice[]"/></td>
+      <td><input type="text" name="Rate[]"/></td>
+      <td><input type="text" name="remarks[]"/></td>
+      <td><input type="text" name="numberOfPeople[]"/></td>
+      <td><input type="text" name="totalAmount[]"/></td>
+    </tr>
+    <tr>
+      <td><select name="Content_history[]">
+        <option value="1">Breakfast</option>
+        <option value="2">Lunch</option>
+        <option value="3">Dinner</option>
+        <option value="4">Gift(food)</option>
+        <option value="5">Gift(Artwork)</option>
+        <option value="6">Gift(other)</option>
+        <option value="7">Golf</option>
+        <option value="8">Sightseeing</option>
+        <option value="9">other</option>
+      </select></td>
+      <td><input type="date" name="ImplementationDate[]"/></td>
+      <td><input type="text" name="UnitPrice[]"/></td>
+      <td><input type="text" name="currency[]"/></td>
+      <td><input type="text" name="unitPrice[]"/></td>
+      <td><input type="text" name="Rate[]"/></td>
+      <td><input type="text" name="remarks[]"/></td>
+      <td><input type="text" name="numberOfPeople[]"/></td>
+      <td><input type="text" name="totalAmount[]"/></td>
+    </tr>
+    <tr>
+      <td><select name="Content_history[]">
+        <option value="1">Breakfast</option>
+        <option value="2">Lunch</option>
+        <option value="3">Dinner</option>
+        <option value="4">Gift(food)</option>
+        <option value="5">Gift(Artwork)</option>
+        <option value="6">Gift(other)</option>
+        <option value="7">Golf</option>
+        <option value="8">Sightseeing</option>
+        <option value="9">other</option>
+      </select></td>
+      <td><input type="date" name="ImplementationDate[]"/></td>
+      <td><input type="text" name="UnitPrice[]"/></td>
+      <td><input type="text" name="currency[]"/></td>
+      <td><input type="text" name="unitPrice[]"/></td>
+      <td><input type="text" name="Rate[]"/></td>
+      <td><input type="text" name="remarks[]"/></td>
+      <td><input type="text" name="numberOfPeople[]"/></td>
+      <td><input type="text" name="totalAmount[]"/></td>
+    </tr>
+    <tr>
+      <td><select name="Content_history[]">
+        <option value="1">Breakfast</option>
+        <option value="2">Lunch</option>
+        <option value="3">Dinner</option>
+        <option value="4">Gift(food)</option>
+        <option value="5">Gift(Artwork)</option>
+        <option value="6">Gift(other)</option>
+        <option value="7">Golf</option>
+        <option value="8">Sightseeing</option>
+        <option value="9">other</option>
+      </select></td>
+      <td><input type="date" name="ImplementationDate[]"/></td>
+      <td><input type="text" name="UnitPrice[]"/></td>
+      <td><input type="text" name="currency[]"/></td>
+      <td><input type="text" name="unitPrice[]"/></td>
+      <td><input type="text" name="Rate[]"/></td>
+      <td><input type="text" name="remarks[]"/></td>
+      <td><input type="text" name="numberOfPeople[]"/></td>
+      <td><input type="text" name="totalAmount[]"/></td>
+    </tr>
+    <tr>
+      <td><select name="Content_history[]">
+        <option value="1">Breakfast</option>
+        <option value="2">Lunch</option>
+        <option value="3">Dinner</option>
+        <option value="4">Gift(food)</option>
+        <option value="5">Gift(Artwork)</option>
+        <option value="6">Gift(other)</option>
+        <option value="7">Golf</option>
+        <option value="8">Sightseeing</option>
+        <option value="9">other</option>
+      </select></td>
+      <td><input type="date" name="ImplementationDate[]"/></td>
+      <td><input type="text" name="UnitPrice[]"/></td>
+      <td><input type="text" name="currency[]"/></td>
+      <td><input type="text" name="unitPrice[]"/></td>
+      <td><input type="text" name="Rate[]"/></td>
+      <td><input type="text" name="remarks[]"/></td>
+      <td><input type="text" name="numberOfPeople[]"/></td>
+      <td><input type="text" name="totalAmount[]"/></td>
+    </tr>
+    <tr>
+      <td><select name="Content_history[]">
+        <option value="1">Breakfast</option>
+        <option value="2">Lunch</option>
+        <option value="3">Dinner</option>
+        <option value="4">Gift(food)</option>
+        <option value="5">Gift(Artwork)</option>
+        <option value="6">Gift(other)</option>
+        <option value="7">Golf</option>
+        <option value="8">Sightseeing</option>
+        <option value="9">other</option>
+      </select></td>
+      <td><input type="date" name="ImplementationDate[]"/></td>
+      <td><input type="text" name="UnitPrice[]"/></td>
+      <td><input type="text" name="currency[]"/></td>
+      <td><input type="text" name="unitPrice[]"/></td>
+      <td><input type="text" name="Rate[]"/></td>
+      <td><input type="text" name="remarks[]"/></td>
+      <td><input type="text" name="numberOfPeople[]"/></td>
+      <td><input type="text" name="totalAmount[]"/></td>
+    </tr>
+    <tr>
+      <td><select name="Content_history[]">
+        <option value="1">Breakfast</option>
+        <option value="2">Lunch</option>
+        <option value="3">Dinner</option>
+        <option value="4">Gift(food)</option>
+        <option value="5">Gift(Artwork)</option>
+        <option value="6">Gift(other)</option>
+        <option value="7">Golf</option>
+        <option value="8">Sightseeing</option>
+        <option value="9">other</option>
+      </select></td>
+      <td><input type="date" name="ImplementationDate[]"/></td>
+      <td><input type="text" name="UnitPrice[]"/></td>
+      <td><input type="text" name="currency[]"/></td>
+      <td><input type="text" name="unitPrice[]"/></td>
+      <td><input type="text" name="Rate[]"/></td>
+      <td><input type="text" name="remarks[]"/></td>
+      <td><input type="text" name="numberOfPeople[]"/></td>
+      <td><input type="text" name="totalAmount[]"/></td>
+    </tr>
+
+    </tbody>
+  </table>
+  <h3>Cost burden list</h3>
+  <table>
+    <thead>
+    <tr>
+      <th>Department</th>
+      <th>Address Code</th>
+      <th>Company</th>
+      <th>%</th>
+      <th>Amount(yen)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td><input type="text" name="Department[]"/></td>
+      <td><input type="text" name="addressCode[]"/></td>
+      <td><input type="text" name="Company[]"/></td>
+      <td><input type="text" name="%[]"/></td>
+      <td><input type="text" name="AmountYen[]"/></td>
+    </tr>
+    <tr>
+      <td><input type="text" name="Department[]"/></td>
+      <td><input type="text" name="addressCode[]"/></td>
+      <td><input type="text" name="Company[]"/></td>
+      <td><input type="text" name="%[]"/></td>
+      <td><input type="text" name="AmountYen[]"/></td>
+    </tr>
+    <tr>
+      <td><input type="text" name="Department[]"/></td>
+      <td><input type="text" name="addressCode[]"/></td>
+      <td><input type="text" name="Company[]"/></td>
+      <td><input type="text" name="%[]"/></td>
+      <td><input type="text" name="AmountYen[]"/></td>
+    </tr>
+    <tr>
+      <td><input type="text" name="Department[]"/></td>
+      <td><input type="text" name="addressCode[]"/></td>
+      <td><input type="text" name="Company[]"/></td>
+      <td><input type="text" name="%[]"/></td>
+      <td><input type="text" name="AmountYen[]"/></td>
+    </tr>
+
+    </tbody>
+  </table>
+
+  <label for="Foreign_current_total">Foreign current total</label>
+  <input type="text" id="Foreign_current_total"><br>
+
+  <label for="total_yen">Total Yen</label>
+  <input type="text" id="total_yen"><br>
+
+  <!-- Include other application settings fields here -->
+
+  <button type="save">Save</button>
+</form>
+</body>
+</html>

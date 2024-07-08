@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      >
+<head>
+    <meta charset="UTF-8">
+    <title>Pre-application</title>
+    <style>
+         header {
+    background-color:#009966;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+button {
+    border: none;
+    background-color: transparent;
+    font-size: 16px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+button a {
+    text-decoration: none;
+    color: #333;
+    padding: 5px 10px;
+    border: 1px solid #333;
+    border-radius: 4px;
+}
+
+button a:hover {
+    background-color: #009900;
+    color: #fff;
+}
+
+    </style>
+</head>
+<header>
+    <!-- Header content -->
+    <button><a>Pre-application </a> </button>
+    <button><a>PDF</a></button>
+    <select id="language-select">
+        <option value="jp">Japanese</option>
+        <option value="en">English</option>
+    </select>
+
+
+    </select>
+</header>
+<body>
+<h1>Application Form</h1>
+
+<h2>Application Field 1</h2>
+<form th:action="'PeopleChargeController/insert'"  method="post">
+    <label for="application-type">Application Type:</label>
+    <select id="application-type" th:field="*{application.applicationType}">
+        <option value="in-advance">In-Advance</option>
+        <option value="blanket-approval">Blanket-Approval</option>
+        <option value="ex-post">Ex-Post</option>
+    </select><br>
+
+    <label for="application-number">Application Number:</label>
+    <input type="text" id="application-number"  th:field="*{application.applicationId}"><br>
+
+    <label for="application-date">Application Date:</label>
+    <input type="date" id="application-date" th:field="*{application.applicationDate}"><br>
+
+    <label for="approval-date">Approval Date:</label>
+    <input type="date" id="approval-date" th:field="*{application.approvalDate}"><br>
+
+    <label>Business Headquarters:</label>
+    <select  >
+        <option th:each="headquarter: ${headquarters}"
+                th:value="${headquarter.id}"
+                th:text="${headquarter.businessHeadquarter}"></option>
+    </select><br>
+
+    <label >Business Headquarters Code:</label>
+    <select >
+        <option th:each="headquarter: ${headquarters}"
+                th:value="${headquarter.id}"
+                th:text="${headquarter.businessHeadquarterCode}"></option>
+    </select><br>
+
+
+    <label for="application-department">Application Supervising Department:</label>
+    <input type="text" id="application-department" th:field="*{application.applicationSupervisingDepartment}"><br>
+
+    <label for="application-room-address-code">Application Room Address Code:</label>
+    <input type="text" id="application-room-address-code" th:field="*{application.applicationRoomAddressCode}"><br>
+
+    <label for="affiliated-company-code">Affiliated Company Code:</label>
+    <input type="text" id="affiliated-company-code" th:field="*{application.affiliatedCompanyCode}"><br>
+
+
+    <label for="main-office">Main Office (Group Address):</label>
+    <input type="text" id="main-office"th:field="*{application.mainOffice}"><br>
+
+    <label for="attachment-description">Attachment (addition) description:</label>
+    <input type="text" id="attachment-description" th:field="*{attachment.attachmentDec}"><br>
+
+    <label for="attachments">Attachments (additional):</label>
+    <input type="file" id="attachments" multiple><br>
+
+    <h3>Attachment (saved)</h3>
+    <table>
+        <thead>
+        <tr>
+            <th>File Name</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody id="attachment-list">
+        <!-- Attachments will be dynamically added here -->
+        </tbody>
+    </table>
+
+
+<script>
+    // Function to display the selected files in the "Attachment (saved)" section
+    function displayAttachments() {
+      var fileList = document.querySelector('input[type=file]').files;
+      var attachmentList = document.getElementById('attachment-list');
+
+      attachmentList.innerHTML = '';
+
+      for (var i = 0; i < fileList.length; i++) {
+        var fileName = fileList[i].name;
+        var listItem = document.createElement('tr');
+
+        var nameCell = document.createElement('td');
+        nameCell.textContent = fileName;
+        listItem.appendChild(nameCell);
+
+        var actionCell = document.createElement('td');
+        var downloadLink = document.createElement('a');
+        downloadLink.href = URL.createObjectURL(fileList[i]);
+        downloadLink.download = fileName;
+        downloadLink.textContent = 'Download';
+        actionCell.appendChild(downloadLink);
+        actionCell.appendChild(document.createTextNode(' | '));
+        var deleteLink = document.createElement('a');
+        deleteLink.href = '#';
+        deleteLink.textContent = 'Delete';
+        deleteLink.addEventListener('click', deleteAttachment);
+        actionCell.appendChild(deleteLink);
+
+        listItem.appendChild(actionCell);
+
+        attachmentList.appendChild(listItem);
+      }
+    }
+
+    // Function to delete an attachment
+    function deleteAttachment(event) {
+      event.preventDefault();
+      var listItem = event.target.parentNode.parentNode;
+      listItem.parentNode.removeChild(listItem);
+    }
+
+    // Add an event listener to the file input
+    document.querySelector('input[type=file]').addEventListener('change', displayAttachments);
+  </script>
+
+<h2>Verification preset setting</h2>
+<label for="verification-preset">Verification Preset:</label>
+<select id="verification-preset" th:field="*{application.veriPreset}">
+    <option value="a">A</option>
+
+</select><br>
+
+<label for="manager">Manager</label>
+<input type="text" id="manager" th:field="*{application.manager}"><br>
+
+<label for="affiliated-company-name">Affiliated Company Name:</label>
+<input type="text" id="affiliated-company-name" th:field="*{application.affiliatedCompanyName}"><br>
+
+<table>
+    <thead>
+    <tr>
+        <th>Authorized reviewer</th>
+        <th>Proxy reviewer</th>
+        <th>Job system</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><input type="text" name="authorized-reviewer[]" th:field="*{verification.authorizedReviewer}" /></td>
+        <td><input type="text" name="proxy-reviewer[]" th:field="*{verification.proxyReviewer}"/></td>
+        <td><input type="text" name="job-system[]" th:field="*{verification.jobSys}" /></td>
+    </tr>
+    <tr>
+        <td><input type="text" name="authorized-reviewer[]" th:field="*{verification.authorizedReviewer}" /></td>
+        <td><input type="text" name="proxy-reviewer[]" th:field="*{verification.proxyReviewer}"/></td>
+        <td><input type="text" name="job-system[]" th:field="*{verification.jobSys}" /></td>
+    </tr>
+    <tr>
+        <td><input type="text" name="authorized-reviewer[]" th:field="*{verification.authorizedReviewer}" /></td>
+        <td><input type="text" name="proxy-reviewer[]" th:field="*{verification.proxyReviewer}"/></td>
+        <td><input type="text" name="job-system[]" th:field="*{verification.jobSys}" /></td>
+    </tr>
+    <tr>
+        <td><input type="text" name="authorized-reviewer[]" th:field="*{verification.authorizedReviewer}" /></td>
+        <td><input type="text" name="proxy-reviewer[]" th:field="*{verification.proxyReviewer}"/></td>
+        <td><input type="text" name="job-system[]" th:field="*{verification.jobSys}" /></td>
+    </tr>
+    <tr>
+        <td><input type="text" name="authorized-reviewer[]" th:field="*{verification.authorizedReviewer}" /></td>
+        <td><input type="text" name="proxy-reviewer[]" th:field="*{verification.proxyReviewer}"/></td>
+        <td><input type="text" name="job-system[]" th:field="*{verification.jobSys}" /></td>
+    </tr>
+    <tr>
+        <td><input type="text" name="authorized-reviewer[]" th:field="*{verification.authorizedReviewer}" /></td>
+        <td><input type="text" name="proxy-reviewer[]" th:field="*{verification.proxyReviewer}"/></td>
+        <td><input type="text" name="job-system[]" th:field="*{verification.jobSys}" /></td>
+    </tr>
+    </tbody>
+</table>
+<h2>Application Field 2</h2>
+<label for="copy-existing">Copy of existing application form:</label>
+<textarea id="copy-existing"></textarea><br>
+
+<button id="copy-button">Copy</button><br>
+
+<label for="scheduled-date-from">Scheduled implementation date From:</label>
+<input type="date" id="scheduled-date-from" th:field="*{application.scheduledImplementationDateFrom}"><br>
+
+<label for="scheduled-date-to">Scheduled implementation date To:</label>
+<input type="date" id="scheduled-date-to" th:field="*{application.scheduledImplementationDateTo}"><br>
+
+<label for="inclusive-frequency">If inclusive, frequency:</label>
+<input type="text" id="inclusive-frequency" th:field="*{application.ifInclusive}"><br>
+
+<label for="project-country">Project country:</label>
+<input type="text" id="project-country" th:field="*{application.projectCountry}" ><br>
+
+<label for="project-title">Project Title:</label>
+<input type="text" id="project-title" th:field="*{application.projectTitle}"><br>
+
+<label for="oda-project">It is an ODA project:</label>
+<input type="checkbox" id="oda-project" onchange="updateHiddenField(this)" th:field="*{application.odaProject}"><br>
+<input type="hidden" id="oda-project-hidden" name="odaProject" value="0">
+<script>
+        function updateHiddenField(checkbox) {
+        var hiddenField = document.getElementById('oda-project-hidden');
+        hiddenField.value = checkbox.checked ? '1' : '0';
+        }
+    </script>
+
+<label for="country-name">Country name:</label>
+<input type="text" id="country-name" th:field="*{application.countryName}"><br>
+
+<label for="city-name">Name of a city:</label>
+<input type="text" id="city-name" th:field="*{application.nameCity}"><br>
+
+<h2>Participant( Civil side)</h2>
+<label for="number-of-peoples">Number of people:</label>
+<input type="text" id="number-of-peoples" th:field="*{application.numberOfPeople}"><br>
+<table>
+    <thead>
+    <tr>
+        <th>Investor </th>
+        <th>Investment ratio</th>
+        <th>Government Office</th>
+        <th>Department</th>
+        <th>Post</th>
+        <th>Full name</th>
+        <th>Attribute</th>
+        <th>Participating entertainment</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><input type="text" name="Investor[]" th:field="*{participants.investorCountryName}"/></td>
+        <td><input type="text" name="Government investment ratio[]" th:field="*{participants.governmentRatio}"/></td>
+        <td><input type="text" name="Government Offices []" th:field="*{participants.governmentOffice}"/>
+            <button type="button" name="deleteIcon" onclick="clearGovernmentOffice()">Delete</button>
+            <button><a href="/peoplecharge/search">Search</a></button>
+            <script>
+                      function clearGovernmentOffice() {
+                      document.getElementById("governmentOffice").value = "";
+                      }
+                       </script>
+        </td>
+        <td><input type="text" name="Department[]" th:field="*{participants.department}"/></td>
+        <td><input type="text" name="post[]" th:field="*{participants.post}"/></td>
+        <td><input type="text" name="fullName[]" th:field="*{participants.fullName}"/></td>
+        <td><select name="attribute[]" th:field="*{participants.attribute}">
+            <option value="1">bureaucrats/official</option>
+            <option value="2">politicians</option>
+            <option value="3">national companies</option>
+            <option value="4">others</option>
+            <option value="5">public officials</option>
+            <option value="6">politician</option>
+            <option value="7">national company</option>
+        </select></td>
+        <td><input type="text" name="entertainment[]" th:field="*{participants.participantDetail}"></td>
+    </tr>
+    <tr>
+        <td><input type="text" name="Investor[]" th:field="*{participants.investorCountryName}"/></td>
+        <td><input type="text" name="Government investment ratio[]" th:field="*{participants.governmentRatio}"/></td>
+        <td><input type="text" name="Government Offices []" th:field="*{participants.governmentOffice}"/>
+            <button type="button" name="deleteIcon" onclick="clearGovernmentOffice()">Delete</button>
+            <button><a href="/peoplecharge/search">Search</a></button>
+            <script>
+                      function clearGovernmentOffice() {
+                      document.getElementById("governmentOffice").value = "";
+                      }
+                       </script>
+        </td>
+        <td><input type="text" name="Department[]" th:field="*{participants.department}"/></td>
+        <td><input type="text" name="post[]" th:field="*{participants.post}"/></td>
+        <td><input type="text" name="fullName[]" th:field="*{participants.fullName}"/></td>
+        <td><select name="attribute[]" th:field="*{participants.attribute}">
+            <option value="1">bureaucrats/official</option>
+            <option value="2">politicians</option>
+            <option value="3">national companies</option>
+            <option value="4">others</option>
+            <option value="5">public officials</option>
+            <option value="6">politician</option>
+            <option value="7">national company</option>
+        </select></td>
+        <td><input type="text" name="entertainment[]" th:field="*{participants.participantDetail}"></td>
+    </tr>
+    <tr>
+        <td><input type="text" name="Investor[]" th:field="*{participants.investorCountryName}"/></td>
+        <td><input type="text" name="Government investment ratio[]" th:field="*{participants.governmentRatio}"/></td>
+        <td><input type="text" name="Government Offices []" th:field="*{participants.governmentOffice}"/>
+            <button type="button" name="deleteIcon" onclick="clearGovernmentOffice()">Delete</button>
+            <button><a href="/peoplecharge/search">Search</a></button>
+            <script>
+                      function clearGovernmentOffice() {
+                      document.getElementById("governmentOffice").value = "";
+                      }
+                       </script>
+        </td>
+        <td><input type="text" name="Department[]" th:field="*{participants.department}"/></td>
+        <td><input type="text" name="post[]" th:field="*{participants.post}"/></td>
+        <td><input type="text" name="fullName[]" th:field="*{participants.fullName}"/></td>
+        <td><select name="attribute[]" th:field="*{participants.attribute}">
+            <option value="1">bureaucrats/official</option>
+            <option value="2">politicians</option>
+            <option value="3">national companies</option>
+            <option value="4">others</option>
+            <option value="5">public officials</option>
+            <option value="6">politician</option>
+            <option value="7">national company</option>
+        </select></td>
+        <td><input type="text" name="entertainment[]" th:field="*{participants.participantDetail}"></td>
+    </tr>
+    <tr>
+        <td><input type="text" name="Investor[]" th:field="*{participants.investorCountryName}"/></td>
+        <td><input type="text" name="Government investment ratio[]" th:field="*{participants.governmentRatio}"/></td>
+        <td><input type="text" name="Government Offices []" th:field="*{participants.governmentOffice}"/>
+            <button type="button" name="deleteIcon" onclick="clearGovernmentOffice()">Delete</button>
+            <button><a href="/peoplecharge/search">Search</a></button>
+            <script>
+                      function clearGovernmentOffice() {
+                      document.getElementById("governmentOffice").value = "";
+                      }
+                       </script>
+        </td>
+        <td><input type="text" name="Department[]" th:field="*{participants.department}"/></td>
+        <td><input type="text" name="post[]" th:field="*{participants.post}"/></td>
+        <td><input type="text" name="fullName[]" th:field="*{participants.fullName}"/></td>
+        <td><select name="attribute[]" th:field="*{participants.attribute}">
+            <option value="1">bureaucrats/official</option>
+            <option value="2">politicians</option>
+            <option value="3">national companies</option>
+            <option value="4">others</option>
+            <option value="5">public officials</option>
+            <option value="6">politician</option>
+            <option value="7">national company</option>
+        </select></td>
+        <td><input type="text" name="entertainment[]" th:field="*{participants.participantDetail}"></td>
+    </tr>
+    <tr>
+        <td><input type="text" name="Investor[]" th:field="*{participants.investorCountryName}"/></td>
+        <td><input type="text" name="Government investment ratio[]" th:field="*{participants.governmentRatio}"/></td>
+        <td><input type="text" name="Government Offices []" th:field="*{participants.governmentOffice}"/>
+            <button type="button" name="deleteIcon" onclick="clearGovernmentOffice()">Delete</button>
+            <button><a href="/peoplecharge/search">Search</a></button>
+            <script>
+                      function clearGovernmentOffice() {
+                      document.getElementById("governmentOffice").value = "";
+                      }
+                       </script>
+        </td>
+        <td><input type="text" name="Department[]" th:field="*{participants.department}"/></td>
+        <td><input type="text" name="post[]" th:field="*{participants.post}"/></td>
+        <td><input type="text" name="fullName[]" th:field="*{participants.fullName}"/></td>
+        <td><select name="attribute[]" th:field="*{participants.attribute}">
+            <option value="1">bureaucrats/official</option>
+            <option value="2">politicians</option>
+            <option value="3">national companies</option>
+            <option value="4">others</option>
+            <option value="5">public officials</option>
+            <option value="6">politician</option>
+            <option value="7">national company</option>
+        </select></td>
+        <td><input type="text" name="entertainment[]" th:field="*{participants.participantDetail}"></td>
+    </tr>
+    <tr>
+        <td><input type="text" name="Investor[]" th:field="*{participants.investorCountryName}"/></td>
+        <td><input type="text" name="Government investment ratio[]" th:field="*{participants.governmentRatio}"/></td>
+        <td><input type="text" name="Government Offices []" th:field="*{participants.governmentOffice}"/>
+            <button type="button" name="deleteIcon" onclick="clearGovernmentOffice()">Delete</button>
+            <button><a href="/peoplecharge/search">Search</a></button>
+            <script>
+                      function clearGovernmentOffice() {
+                      document.getElementById("governmentOffice").value = "";
+                      }
+                       </script>
+        </td>
+        <td><input type="text" name="Department[]" th:field="*{participants.department}"/></td>
+        <td><input type="text" name="post[]" th:field="*{participants.post}"/></td>
+        <td><input type="text" name="fullName[]" th:field="*{participants.fullName}"/></td>
+        <td><select name="attribute[]" th:field="*{participants.attribute}">
+            <option value="1">bureaucrats/official</option>
+            <option value="2">politicians</option>
+            <option value="3">national companies</option>
+            <option value="4">others</option>
+            <option value="5">public officials</option>
+            <option value="6">politician</option>
+            <option value="7">national company</option>
+        </select></td>
+        <td><input type="text" name="entertainment[]" th:field="*{participants.participantDetail}"></td>
+    </tr>
+    </tbody>
+</table>
+<h2>Participant( Our Company)</h2>
+<label for="number-of-people">Number of people:</label>
+<input type="text" id="number-of-people" th:field="*{application.numberOfPeopleOurCompany}"><br>
+<table>
+    <thead>
+    <tr>
+        <th>Our Department Name</th>
+        <th>Our Office Name</th>
+        <th>post</th>
+        <th>full name</th>
+        <th>attribute</th>
+        <th>participating entertainment</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><input type="text" name="departmentName[]" th:field="*{participants.department}"/></td>
+        <td><input type="text" name="officeName[]" th:field="*{participants.governmentOffice}"/></td>
+        <td><input type="text" name="post[]" th:field="*{participants.post}"/></td>
+        <td><input type="text" name="fullName[]" th:field="*{participants.fullName}"/></td>
+        <td><select name="attribute[]" th:field="*{participants.attribute}">
+            <option value="1">In-house</option>
+            <option value="2">Affiliated company</option>
+            <option value="3">External</option>
+            <option value="4">MBK</option>
+            <option value="5">subsidiary</option>
+            <option value="6">secondment</option>
+        </select></td>
+        <td><input type="text" name="entertainment[]" th:field="*{participants.participantDetail}"></td>
+    </tr>
+    <tr>
+        <td><input type="text" name="departmentName[]" th:field="*{participants.department}"/></td>
+        <td><input type="text" name="officeName[]" th:field="*{participants.governmentOffice}"/></td>
+        <td><input type="text" name="post[]" th:field="*{participants.post}"/></td>
+        <td><input type="text" name="fullName[]" th:field="*{participants.fullName}"/></td>
+        <td><select name="attribute[]" th:field="*{participants.attribute}">
+            <option value="1">In-house</option>
+            <option value="2">Affiliated company</option>
+            <option value="3">External</option>
+            <option value="4">MBK</option>
+            <option value="5">subsidiary</option>
+            <option value="6">secondment</option>
+        </select></td>
+        <td><input type="text" name="entertainment[]" th:field="*{participants.participantDetail}"></td>
+    </tr>
+    <tr>
+        <td><input type="text" name="departmentName[]" th:field="*{participants.department}"/></td>
+        <td><input type="text" name="officeName[]" th:field="*{participants.governmentOffice}"/></td>
+        <td><input type="text" name="post[]" th:field="*{participants.post}"/></td>
+        <td><input type="text" name="fullName[]" th:field="*{participants.fullName}"/></td>
+        <td><select name="attribute[]" th:field="*{participants.attribute}">
+            <option value="1">In-house</option>
+            <option value="2">Affiliated company</option>
+            <option value="3">External</option>
+            <option value="4">MBK</option>
+            <option value="5">subsidiary</option>
+            <option value="6">secondment</option>
+        </select></td>
+        <td><input type="text" name="entertainment[]" th:field="*{participants.participantDetail}"></td>
+    </tr>
+    <tr>
+        <td><input type="text" name="departmentName[]" th:field="*{participants.department}"/></td>
+        <td><input type="text" name="officeName[]" th:field="*{participants.governmentOffice}"/></td>
+        <td><input type="text" name="post[]" th:field="*{participants.post}"/></td>
+        <td><input type="text" name="fullName[]" th:field="*{participants.fullName}"/></td>
+        <td><select name="attribute[]" th:field="*{participants.attribute}">
+            <option value="1">In-house</option>
+            <option value="2">Affiliated company</option>
+            <option value="3">External</option>
+            <option value="4">MBK</option>
+            <option value="5">subsidiary</option>
+            <option value="6">secondment</option>
+        </select></td>
+        <td><input type="text" name="entertainment[]" th:field="*{participants.participantDetail}"></td>
+    </tr>
+    <tr>
+        <td><input type="text" name="departmentName[]" th:field="*{participants.department}"/></td>
+        <td><input type="text" name="officeName[]" th:field="*{participants.governmentOffice}"/></td>
+        <td><input type="text" name="post[]" th:field="*{participants.post}"/></td>
+        <td><input type="text" name="fullName[]" th:field="*{participants.fullName}"/></td>
+        <td><select name="attribute[]" th:field="*{participants.attribute}">
+            <option value="1">In-house</option>
+            <option value="2">Affiliated company</option>
+            <option value="3">External</option>
+            <option value="4">MBK</option>
+            <option value="5">subsidiary</option>
+            <option value="6">secondment</option>
+        </select></td>
+        <td><input type="text" name="entertainment[]" th:field="*{participants.participantDetail}"></td>
+    </tr>
+    <tr>
+        <td><input type="text" name="departmentName[]" th:field="*{participants.department}"/></td>
+        <td><input type="text" name="officeName[]" th:field="*{participants.governmentOffice}"/></td>
+        <td><input type="text" name="post[]" th:field="*{participants.post}"/></td>
+        <td><input type="text" name="fullName[]" th:field="*{participants.fullName}"/></td>
+        <td><select name="attribute[]" th:field="*{participants.attribute}">
+            <option value="1">In-house</option>
+            <option value="2">Affiliated company</option>
+            <option value="3">External</option>
+            <option value="4">MBK</option>
+            <option value="5">subsidiary</option>
+            <option value="6">secondment</option>
+        </select></td>
+        <td><input type="text" name="entertainment[]" th:field="*{participants.participantDetail}"></td>
+    </tr>
+    </tbody>
+</table>
+<h2>Participant(other)</h2>
+<label for="number-of-people">Number of people:</label>
+<input type="text" name="number-of-people"  th:field="*{application.numberOfPeopleOther}"><br>
+<table>
+    <thead>
+    <tr>
+        <th>Our Department Name</th>
+        <th>Our Office Name</th>
+        <th>post</th>
+        <th>full name</th>
+        <th>attribute</th>
+        <th>participating entertainment</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><input type="text" name="departmentName[]" th:field="*{participants.department}"/></td>
+        <td><input type="text" name="officeName[]" th:field="*{participants.governmentOffice}"/></td>
+        <td><input type="text" name="post[]" th:field="*{participants.post}"/></td>
+        <td><input type="text" name="fullName[]" th:field="*{participants.fullName}"/></td>
+        <td><select name="attribute[]" th:field="*{participants.attribute}">
+            <option value="1">In-house</option>
+            <option value="2">Affiliated company</option>
+            <option value="3">External</option>
+            <option value="4">MBK</option>
+            <option value="5">subsidiary</option>
+            <option value="6">secondment</option>
+        </select></td>
+        <td><input type="text" name="entertainment[]" th:field="*{participants.participantDetail}"></td>
+    </tr>
+    <tr>
+        <td><input type="text" name="departmentName[]" th:field="*{participants.department}"/></td>
+        <td><input type="text" name="officeName[]" th:field="*{participants.governmentOffice}"/></td>
+        <td><input type="text" name="post[]" th:field="*{participants.post}"/></td>
+        <td><input type="text" name="fullName[]" th:field="*{participants.fullName}"/></td>
+        <td><select name="attribute[]" th:field="*{participants.attribute}">
+            <option value="1">In-house</option>
+            <option value="2">Affiliated company</option>
+            <option value="3">External</option>
+            <option value="4">MBK</option>
+            <option value="5">subsidiary</option>
+            <option value="6">secondment</option>
+        </select></td>
+        <td><input type="text" name="entertainment[]" th:field="*{participants.participantDetail}"></td>
+    </tr>
+    <tr>
+        <td><input type="text" name="departmentName[]" th:field="*{participants.department}"/></td>
+        <td><input type="text" name="officeName[]" th:field="*{participants.governmentOffice}"/></td>
+        <td><input type="text" name="post[]" th:field="*{participants.post}"/></td>
+        <td><input type="text" name="fullName[]" th:field="*{participants.fullName}"/></td>
+        <td><select name="attribute[]" th:field="*{participants.attribute}">
+            <option value="1">In-house</option>
+            <option value="2">Affiliated company</option>
+            <option value="3">External</option>
+            <option value="4">MBK</option>
+            <option value="5">subsidiary</option>
+            <option value="6">secondment</option>
+        </select></td>
+        <td><input type="text" name="entertainment[]" th:field="*{participants.participantDetail}"></td>
+    </tr>
+    <tr>
+        <td><input type="text" name="departmentName[]" th:field="*{participants.department}"/></td>
+        <td><input type="text" name="officeName[]" th:field="*{participants.governmentOffice}"/></td>
+        <td><input type="text" name="post[]" th:field="*{participants.post}"/></td>
+        <td><input type="text" name="fullName[]" th:field="*{participants.fullName}"/></td>
+        <td><select name="attribute[]" th:field="*{participants.attribute}">
+            <option value="1">In-house</option>
+            <option value="2">Affiliated company</option>
+            <option value="3">External</option>
+            <option value="4">MBK</option>
+            <option value="5">subsidiary</option>
+            <option value="6">secondment</option>
+        </select></td>
+        <td><input type="text" name="entertainment[]" th:field="*{participants.participantDetail}"></td>
+    </tr>
+    <tr>
+        <td><input type="text" name="departmentName[]" th:field="*{participants.department}"/></td>
+        <td><input type="text" name="officeName[]" th:field="*{participants.governmentOffice}"/></td>
+        <td><input type="text" name="post[]" th:field="*{participants.post}"/></td>
+        <td><input type="text" name="fullName[]" th:field="*{participants.fullName}"/></td>
+        <td><select name="attribute[]" th:field="*{participants.attribute}">
+            <option value="1">In-house</option>
+            <option value="2">Affiliated company</option>
+            <option value="3">External</option>
+            <option value="4">MBK</option>
+            <option value="5">subsidiary</option>
+            <option value="6">secondment</option>
+        </select></td>
+        <td><input type="text" name="entertainment[]" th:field="*{participants.participantDetail}"></td>
+    </tr>
+    <tr>
+        <td><input type="text" name="departmentName[]" th:field="*{participants.department}"/></td>
+        <td><input type="text" name="officeName[]" th:field="*{participants.governmentOffice}"/></td>
+        <td><input type="text" name="post[]" th:field="*{participants.post}"/></td>
+        <td><input type="text" name="fullName[]" th:field="*{participants.fullName}"/></td>
+        <td><select name="attribute[]" th:field="*{participants.attribute}">
+            <option value="1">In-house</option>
+            <option value="2">Affiliated company</option>
+            <option value="3">External</option>
+            <option value="4">MBK</option>
+            <option value="5">subsidiary</option>
+            <option value="6">secondment</option>
+        </select></td>
+        <td><input type="text" name="entertainment[]" th:field="*{participants.participantDetail}"></td>
+    </tr>
+    </tbody>
+</table>
+<h2>Meeting places</h2>
+<label for="CountryName">Country Name</label>
+<input type="text" id="CountryName" th:field="*{application.countryName}"><br>
+<label for="NameCity">Name Of City</label>
+<input type="text" id="NameCity"  th:field="*{application.nameCity}"><br>
+
+<table>
+    <thead>
+    <tr>
+        <th>Contents of hospitality</th>
+        <th>Implement date</th>
+        <th>Unit price(yen)</th>
+        <th>Currency</th>
+        <th>Unit price(foreign currency)</th>
+        <th>rate</th>
+        <th>Remarks</th>
+        <th>Number of people/quantity</th>
+        <th>Total amount(yen)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><select name="Content_history[]"  th:field="*{place.contentsOfHospitality}">
+            <option value="1">Breakfast</option>
+            <option value="2">Lunch</option>
+            <option value="3">Dinner</option>
+            <option value="4">Gift(food)</option>
+            <option value="5">Gift(Artwork)</option>
+            <option value="6">Gift(other)</option>
+            <option value="7">Golf</option>
+            <option value="8">Sightseeing</option>
+            <option value="9">other</option>
+        </select></td>
+        <td><input type="date" name="ImplementationDate[]" th:field="*{place.implementationDate}"/></td>
+        <td><input type="text" name="UnitPrice[]"  th:field="*{place.unitPriceYen}"/></td>
+        <td><input type="text" name="currency[]"  th:field="*{place.currency}"/></td>
+        <td><input type="text" name="unitPrice[]"  th:field="*{place.unitPriceYenForeignCurrency}"/></td>
+        <td><input type="text" name="Rate[]" th:field="*{place.rate}"/></td>
+        <td><input type="text" name="remarks[]" th:field="*{place.remarks}"/></td>
+        <td><input type="text" name="numberOfPeople[]" th:field="*{place.numberPeopleOrQuantity}"/></td>
+        <td><input type="text" name="totalAmount[]"  th:field="*{place.totalAmount}"/></td>
+    </tr>
+    <tr>
+        <td><select name="Content_history[]"  th:field="*{place.contentsOfHospitality}">
+            <option value="1">Breakfast</option>
+            <option value="2">Lunch</option>
+            <option value="3">Dinner</option>
+            <option value="4">Gift(food)</option>
+            <option value="5">Gift(Artwork)</option>
+            <option value="6">Gift(other)</option>
+            <option value="7">Golf</option>
+            <option value="8">Sightseeing</option>
+            <option value="9">other</option>
+        </select></td>
+        <td><input type="date" name="ImplementationDate[]" th:field="*{place.implementationDate}"/></td>
+        <td><input type="text" name="UnitPrice[]"  th:field="*{place.unitPriceYen}"/></td>
+        <td><input type="text" name="currency[]"  th:field="*{place.currency}"/></td>
+        <td><input type="text" name="unitPrice[]"  th:field="*{place.unitPriceYenForeignCurrency}"/></td>
+        <td><input type="text" name="Rate[]" th:field="*{place.rate}"/></td>
+        <td><input type="text" name="remarks[]" th:field="*{place.remarks}"/></td>
+        <td><input type="text" name="numberOfPeople[]" th:field="*{place.numberPeopleOrQuantity}"/></td>
+        <td><input type="text" name="totalAmount[]"  th:field="*{place.totalAmount}"/></td>
+    </tr>
+    <tr>
+        <td><select name="Content_history[]"  th:field="*{place.contentsOfHospitality}">
+            <option value="1">Breakfast</option>
+            <option value="2">Lunch</option>
+            <option value="3">Dinner</option>
+            <option value="4">Gift(food)</option>
+            <option value="5">Gift(Artwork)</option>
+            <option value="6">Gift(other)</option>
+            <option value="7">Golf</option>
+            <option value="8">Sightseeing</option>
+            <option value="9">other</option>
+        </select></td>
+        <td><input type="date" name="ImplementationDate[]" th:field="*{place.implementationDate}"/></td>
+        <td><input type="text" name="UnitPrice[]"  th:field="*{place.unitPriceYen}"/></td>
+        <td><input type="text" name="currency[]"  th:field="*{place.currency}"/></td>
+        <td><input type="text" name="unitPrice[]"  th:field="*{place.unitPriceYenForeignCurrency}"/></td>
+        <td><input type="text" name="Rate[]" th:field="*{place.rate}"/></td>
+        <td><input type="text" name="remarks[]" th:field="*{place.remarks}"/></td>
+        <td><input type="text" name="numberOfPeople[]" th:field="*{place.numberPeopleOrQuantity}"/></td>
+        <td><input type="text" name="totalAmount[]"  th:field="*{place.totalAmount}"/></td>
+    </tr>
+    <tr>
+        <td><select name="Content_history[]"  th:field="*{place.contentsOfHospitality}">
+            <option value="1">Breakfast</option>
+            <option value="2">Lunch</option>
+            <option value="3">Dinner</option>
+            <option value="4">Gift(food)</option>
+            <option value="5">Gift(Artwork)</option>
+            <option value="6">Gift(other)</option>
+            <option value="7">Golf</option>
+            <option value="8">Sightseeing</option>
+            <option value="9">other</option>
+        </select></td>
+        <td><input type="date" name="ImplementationDate[]" th:field="*{place.implementationDate}"/></td>
+        <td><input type="text" name="UnitPrice[]"  th:field="*{place.unitPriceYen}"/></td>
+        <td><input type="text" name="currency[]"  th:field="*{place.currency}"/></td>
+        <td><input type="text" name="unitPrice[]"  th:field="*{place.unitPriceYenForeignCurrency}"/></td>
+        <td><input type="text" name="Rate[]" th:field="*{place.rate}"/></td>
+        <td><input type="text" name="remarks[]" th:field="*{place.remarks}"/></td>
+        <td><input type="text" name="numberOfPeople[]" th:field="*{place.numberPeopleOrQuantity}"/></td>
+        <td><input type="text" name="totalAmount[]"  th:field="*{place.totalAmount}"/></td>
+    </tr>
+    <tr>
+        <td><select name="Content_history[]"  th:field="*{place.contentsOfHospitality}">
+            <option value="1">Breakfast</option>
+            <option value="2">Lunch</option>
+            <option value="3">Dinner</option>
+            <option value="4">Gift(food)</option>
+            <option value="5">Gift(Artwork)</option>
+            <option value="6">Gift(other)</option>
+            <option value="7">Golf</option>
+            <option value="8">Sightseeing</option>
+            <option value="9">other</option>
+        </select></td>
+        <td><input type="date" name="ImplementationDate[]" th:field="*{place.implementationDate}"/></td>
+        <td><input type="text" name="UnitPrice[]"  th:field="*{place.unitPriceYen}"/></td>
+        <td><input type="text" name="currency[]"  th:field="*{place.currency}"/></td>
+        <td><input type="text" name="unitPrice[]"  th:field="*{place.unitPriceYenForeignCurrency}"/></td>
+        <td><input type="text" name="Rate[]" th:field="*{place.rate}"/></td>
+        <td><input type="text" name="remarks[]" th:field="*{place.remarks}"/></td>
+        <td><input type="text" name="numberOfPeople[]" th:field="*{place.numberPeopleOrQuantity}"/></td>
+        <td><input type="text" name="totalAmount[]"  th:field="*{place.totalAmount}"/></td>
+    </tr>
+    <tr>
+        <td><select name="Content_history[]"  th:field="*{place.contentsOfHospitality}">
+            <option value="1">Breakfast</option>
+            <option value="2">Lunch</option>
+            <option value="3">Dinner</option>
+            <option value="4">Gift(food)</option>
+            <option value="5">Gift(Artwork)</option>
+            <option value="6">Gift(other)</option>
+            <option value="7">Golf</option>
+            <option value="8">Sightseeing</option>
+            <option value="9">other</option>
+        </select></td>
+        <td><input type="date" name="ImplementationDate[]" th:field="*{place.implementationDate}"/></td>
+        <td><input type="text" name="UnitPrice[]"  th:field="*{place.unitPriceYen}"/></td>
+        <td><input type="text" name="currency[]"  th:field="*{place.currency}"/></td>
+        <td><input type="text" name="unitPrice[]"  th:field="*{place.unitPriceYenForeignCurrency}"/></td>
+        <td><input type="text" name="Rate[]" th:field="*{place.rate}"/></td>
+        <td><input type="text" name="remarks[]" th:field="*{place.remarks}"/></td>
+        <td><input type="text" name="numberOfPeople[]" th:field="*{place.numberPeopleOrQuantity}"/></td>
+        <td><input type="text" name="totalAmount[]"  th:field="*{place.totalAmount}"/></td>
+    </tr>
+    <tr>
+        <td><select name="Content_history[]"  th:field="*{place.contentsOfHospitality}">
+            <option value="1">Breakfast</option>
+            <option value="2">Lunch</option>
+            <option value="3">Dinner</option>
+            <option value="4">Gift(food)</option>
+            <option value="5">Gift(Artwork)</option>
+            <option value="6">Gift(other)</option>
+            <option value="7">Golf</option>
+            <option value="8">Sightseeing</option>
+            <option value="9">other</option>
+        </select></td>
+        <td><input type="date" name="ImplementationDate[]" th:field="*{place.implementationDate}"/></td>
+        <td><input type="text" name="UnitPrice[]"  th:field="*{place.unitPriceYen}"/></td>
+        <td><input type="text" name="currency[]"  th:field="*{place.currency}"/></td>
+        <td><input type="text" name="unitPrice[]"  th:field="*{place.unitPriceYenForeignCurrency}"/></td>
+        <td><input type="text" name="Rate[]" th:field="*{place.rate}"/></td>
+        <td><input type="text" name="remarks[]" th:field="*{place.remarks}"/></td>
+        <td><input type="text" name="numberOfPeople[]" th:field="*{place.numberPeopleOrQuantity}"/></td>
+        <td><input type="text" name="totalAmount[]"  th:field="*{place.totalAmount}"/></td>
+    </tr>
+
+    </tbody>
+</table>
+<h3>Cost burden list</h3>
+<table>
+    <thead>
+    <tr>
+        <th>Department</th>
+        <th>Address Code</th>
+        <th>Company</th>
+        <th>%</th>
+        <th>Amount(yen)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><input type="text" name="Department[]" th:field="*{cost.department}"/></td>
+        <td><input type="text" name="addressCode[]" th:field="*{cost.addressCode}"/></td>
+        <td><input type="text" name="Company[]" th:field="*{cost.company}"/></td>
+        <td><input type="text" name="%[]" th:field="*{cost.percent}"/></td>
+        <td><input type="text" name="AmountYen[]" th:field="*{cost.amountYen}"/></td>
+    </tr>
+    <tr>
+        <td><input type="text" name="Department[]" th:field="*{cost.department}"/></td>
+        <td><input type="text" name="addressCode[]" th:field="*{cost.addressCode}"/></td>
+        <td><input type="text" name="Company[]" th:field="*{cost.company}"/></td>
+        <td><input type="text" name="%[]" th:field="*{cost.percent}"/></td>
+        <td><input type="text" name="AmountYen[]" th:field="*{cost.amountYen}"/></td>
+    </tr>
+    <tr>
+        <td><input type="text" name="Department[]" th:field="*{cost.department}"/></td>
+        <td><input type="text" name="addressCode[]" th:field="*{cost.addressCode}"/></td>
+        <td><input type="text" name="Company[]" th:field="*{cost.company}"/></td>
+        <td><input type="text" name="%[]" th:field="*{cost.percent}"/></td>
+        <td><input type="text" name="AmountYen[]" th:field="*{cost.amountYen}"/></td>
+    </tr>
+    <tr>
+        <td><input type="text" name="Department[]" th:field="*{cost.department}"/></td>
+        <td><input type="text" name="addressCode[]" th:field="*{cost.addressCode}"/></td>
+        <td><input type="text" name="Company[]" th:field="*{cost.company}"/></td>
+        <td><input type="text" name="%[]" th:field="*{cost.percent}"/></td>
+        <td><input type="text" name="AmountYen[]" th:field="*{cost.amountYen}"/></td>
+    </tr>
+
+    </tbody>
+</table>
+
+<label for="Foreign_current_total">Foreign current total</label>
+<input type="text" id="Foreign_current_total" th:field="*{application.foreignTotal}"><br>
+
+<label for="total_yen">Total Yen</label>
+<input type="text" id="total_yen" th:field="*{application.totalYen}"><br>
+
+<!-- Include other application settings fields here -->
+
+<button type="save">Save</button>
+</form>
+</body>
+</html>

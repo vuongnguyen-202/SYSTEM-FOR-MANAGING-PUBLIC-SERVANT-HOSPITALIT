@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <meta charset="UTF-8">
+    <title>List Screen</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+       header {
+    background-color:#009966;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+button {
+    border: none;
+    background-color: transparent;
+    font-size: 16px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+button a {
+    text-decoration: none;
+    color: #333;
+    padding: 5px 10px;
+    border: 1px solid #333;
+    border-radius: 4px;
+}
+
+button a:hover {
+    background-color: #009900;
+    color: #fff;
+}
+
+select {
+    border: 1px solid #333;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+        .search-area {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #66CC99;
+            border-radius: 4px;
+        }
+
+        .search-criteria {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .search-criteria label {
+            display: inline-block;
+            width: 150px;
+        }
+
+        .search-criteria input,
+        .search-criteria select {
+            width: 200px;
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+
+
+.search-buttons {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.search-buttons button {
+    border: none;
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.search-buttons button#clear {
+    background-color: #ccc;
+    color: #333;
+}
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th,
+        table td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+    </style>
+
+
+</head>
+<body>
+<header>
+    <!-- Header content -->
+    <button><a href="PeopleChargeController/newApplication">Pre-application</a> </button>
+    <button><a href="/people/report">Implementation report</a></button>
+    <button>Approver</button>
+    <button>Hospitality setting</button>
+    <select>
+        <option value="jp">Japanese</option>
+        <option value="en">English</option>
+    </select>
+</header>
+
+<div class="search-area">
+    <div class="search-criteria">
+        <label for="status">Status:</label>
+        <select id="status">
+            <option value="">-- Select Status --</option>
+            <option value="1">Approved</option>
+            <option value="2">Checking</option>
+            <option value="2">Unchecking</option>
+            <option value="2">Editing application</option>
+            <!-- Add more options as needed -->
+        </select>
+
+        <label for="applicationNo">Application No.:</label>
+        <input type="text" id="applicationNo">
+
+        <label for="scheduledImplementationDateFrom">scheduledImplementationDateFrom:</label>
+        <input type="date" id="scheduledImplementationDateFrom">
+
+        <label for="scheduledImplementationDateTo">scheduledImplementationDateTo:</label>
+        <input type="date" id="scheduledImplementationDateTo">
+
+        <label for="manager">Manager:</label>
+        <input type="text" id="manager">
+
+        <label for="reportNo">Report No.:</label>
+        <input type="text" id="reportNo">
+
+        <label for="reportScheduledImplementationDateFrom">reportScheduledImplementationDateFrom:</label>
+        <input type="date" id="reportScheduledImplementationDateFrom">
+
+        <label for="reportScheduledImplementationDateTo">reportSscheduledImplementationDateTo:</label>
+        <input type="date" id="reportScheduledImplementationDateTo">
+
+        <label for="projectTitle">Project Title:</label>
+        <input type="text" id="projectTitle">
+
+        <label for="departmentName">Department Name:</label>
+        <input type="text" id="departmentName">
+    </div>
+
+    <div class="search-buttons">
+        <form th:action="'/search'"  method="get">
+        <button id="search">Search</button>
+        </form>
+        <button id="clear">Clear</button>
+    </div>
+</div>
+
+<div class="DisplayResult">
+    <table border="1">
+        <tr>
+            <th>ApplicationNo</th>
+            <th>Scheduled implementation date</th>
+            <th>Project Title</th>
+            <th>Application date</th>
+            <th>manager</th>
+            <th>Status</th>
+
+        </tr>
+        <tr th:each="app: ${applications}">
+            <td th:text="${app.applicationId}"></td>
+            <td th:text="${app.scheduledImplementationDateFrom}"></td>
+            <td th:text="${app.projectTitle}"></td>
+            <td th:text="${app.applicationDate}"></td>
+            <td th:text="${app.manager}"></td>
+
+        </tr>
+    </table>
+    <table border="2">
+        <tr>
+            <th>ReportNo</th>
+            <th>ApplicationNo</th>
+            <th>Scheduled implementation date</th>
+            <th>Project Title</th>
+            <th>Status</th>
+            <th>Report date</th>
+            <th>manager</th>
+
+        </tr>
+
+
+    </table>
+
+</div>
+
+
+<!-- Other page content -->
+
+<!-- JavaScript code and additional scripts -->
+</body>
+</html>

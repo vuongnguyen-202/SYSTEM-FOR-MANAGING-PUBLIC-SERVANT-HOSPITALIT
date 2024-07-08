@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+<head>
+  <meta charset="UTF-8">
+  <title>Pre-application</title>
+</head>
+<body>
+<h2>Hospitality Search</h2>
+
+<label for="hospitality-name">Hospitality Name:</label>
+<input type="text" id="hospitality-name" placeholder="Search keyword input field for hospitality destination">
+
+<button id="search-button">Search</button>
+<button id="installation-button">Installation</button>
+
+
+<div id="details-area">
+  <h3>Hospitality Details</h3>
+  <table id="hospitality-table">
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Contact</th>
+      <th>Department</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Displayed contacts will be dynamically added here -->
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>
